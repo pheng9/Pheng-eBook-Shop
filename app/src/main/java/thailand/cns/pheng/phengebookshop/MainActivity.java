@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Explicit
         private Context context;
-        private String myURL, myUserString, myPasswordString;
+        private String myURL, myUserString, myPasswordString, truePassword;
         private boolean statusABoolean = true;
 
         public SynUserTABLE(Context context, String myURL, String myUserString, String myPasswordString) {
@@ -78,14 +79,19 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (myUserString.equals(jsonObject.getString("user"))) {
                         statusABoolean = false;
-                    } else if (statusABoolean) {
-                        MyAlert myAlert = new MyAlert();
-                        myAlert.myDialog(context, "ไม่มี User นี้", "ไม่มี " + myUserString + " ในฐานข้อมูลของเรา");
-                    } else {
+                        truePassword = jsonObject.getString("password");
                     }
 
                 }   // for
-
+                if (statusABoolean) {
+                    MyAlert myAlert = new MyAlert();
+                    myAlert.myDialog(context, "ไม่มี User นี้", "ไม่มี " + myUserString + " ในฐานข้อมูลของเรา");
+                } else if (myPasswordString.equals(truePassword)) {
+                    Toast.makeText(context, "Welcome", Toast.LENGTH_SHORT).show();
+                } else {
+                    MyAlert myAlert = new MyAlert();
+                    myAlert.myDialog(context, "Password False", "Please try again password false!");
+                }
 
             } catch (Exception e) {
                 Log.d("ShopV1", "e onPost ==> " + e.toString());
